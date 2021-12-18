@@ -1,35 +1,59 @@
-let stars = [];
-let amount = 1000;
-let speed;
-let mic;
+let rez = 30;
+let food;
+let w;
+let h;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  for (let i = 0; i < amount; i++) {
-    stars[i] = new Star();
-  }
-  // mic = new p5.AudioIn();
-  // mic.start();
-  // console.log(mic);
+  w = floor(width / rez);
+  h = floor(height / rez);
+  frameRate(8);
+  snake = new Snake();
+  foodLocation();
 }
 
 function draw() {
-  background(0);
-  // console.log(frameCount);
-  // let vol = mic.getLevel();
-  // let speed = map(vol, 0, 1, 10, 50);
-  let speed = map(mouseX, 0, width, 10, 40);
-  // console.log(speed);
-  let orientationX = map(mouseX, 0, width, 1, 3);
-  let orientationY = map(mouseY, 0, width, 1, 3);
+  background(200);
+  scale(rez);
 
-  translate(width / orientationX, height / orientationY);
-  for (let i = 0; i < amount; i++) {
-    stars[i].update(speed);
-    stars[i].show();
+  if (snake.eat(food)) {
+    foodLocation();
+    snake.grow();
+    snake.changeLen(5);
+    console.log(snake.len);
+  }
+
+  snake.update();
+  snake.show();
+
+  noStroke();
+  fill(255, 0, 0);
+  rect(food.x, food.y, 1, 1);
+}
+
+function foodLocation() {
+  let x = floor(random(w));
+  let y = floor(random(h));
+  food = createVector(x, y);
+}
+
+function keyPressed() {
+  switch (keyCode) {
+    case LEFT_ARROW:
+      snake.setDir(-1, 0);
+      break;
+    case RIGHT_ARROW:
+      snake.setDir(1, 0);
+      break;
+    case UP_ARROW:
+      snake.setDir(0, -1);
+      break;
+    case DOWN_ARROW:
+      snake.setDir(0, 1);
+      break;
   }
 }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
+// function windowResized() {
+//   resizeCanvas(windowWidth, windowHeight);
+// }
